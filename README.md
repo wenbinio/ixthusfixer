@@ -107,12 +107,19 @@ See `IxthusFix/README.md` for detailed build instructions.
 ✅ Verified fixes for:
 - Map generation with mod enabled
 - Settlement (Crypt) spawning
-- Agent (Gawain) movement
+- Agent (Gawain) movement on same layer
 - God power execution
-- Layer transitions
 - Save/load functionality
 
-⚠️ **Note**: This is a template/reference implementation. The actual Ixthus mod content (sprites, specific mechanics, balancing) would need to be obtained from the original mod or recreated.
+⚠️ **Known Limitations**:
+- ❌ **Layer transitions not fully implemented** - Agents cannot cross between surface and underground
+  - The `hasLayerTransitionAccess()` method needs actual Underground DLC feature types
+  - The `findLayerTransitionPath()` pathfinding is a placeholder
+  - This affects Gawain's ability to use cave entrances or similar features
+- ⚠️ **Template mechanics** - Some specific game mechanics are simplified placeholders
+- ⚠️ **No original assets** - Sprites and graphics would need to be added
+
+⚠️ **Note**: This is a template/reference implementation. The actual Ixthus mod content (sprites, specific mechanics, balancing) would need to be obtained from the original mod or recreated. The layer transition system requires knowledge of Underground DLC's specific feature types to implement fully.
 
 ## For Original Mod Authors
 

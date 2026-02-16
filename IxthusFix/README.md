@@ -169,8 +169,19 @@ Use this as a reference for fixing your own mods. Key patterns:
 **Solution**: Check `isLocationValid()` method in Set_Crypt.cs
 
 ### Issue: Movement errors with Gawain
-**Cause**: Pathfinding not fully implemented
-**Solution**: The template has placeholder pathfinding - implement proper A* with layer support
+**Cause**: Pathfinding not fully implemented for layer transitions  
+**Solution**: The template has placeholder pathfinding for same-layer movement
+
+**Known Limitation**: Agents cannot currently cross between surface and underground layers because:
+1. The `hasLayerTransitionAccess()` method needs actual Underground DLC feature type identification
+2. The `findLayerTransitionPath()` is a placeholder implementation
+3. Requires knowledge of the specific Feature types in Underground DLC (cave entrances, mine shafts, etc.)
+
+To implement fully, you would need to:
+- Examine Underground DLC features using a decompiler or modding tools
+- Identify which Feature types provide layer transitions
+- Implement proper feature type checking in the extension method
+- Build complete A* pathfinding that accounts for transition points
 
 ## Technical Details
 

@@ -70,6 +70,8 @@ namespace IxthusFix
 
         /// <summary>
         /// FIX: Check if there's a cave entrance or other transition between layers
+        /// TODO: This is a placeholder - needs actual game feature checking
+        /// NOTE: Currently always returns false - implement with actual Underground DLC features
         /// </summary>
         protected virtual bool hasLayerTransitionAccess(Location from, Location to)
         {
@@ -79,19 +81,30 @@ namespace IxthusFix
             // Check if locations are adjacent (can only transition through adjacent hexes)
             if (!from.isNeighbour(to)) return false;
 
-            // Check for underground entrance features
-            // This would need to check for actual game features like caves, mines, etc.
-            foreach (Feature feature in from.properties.features)
-            {
-                // Check if feature allows layer transition
-                // Placeholder - would need actual game's underground entrance feature types
-                if (feature != null && feature.providesUndergroundAccess())
-                {
-                    return true;
-                }
-            }
+            // TODO: Check for underground entrance features
+            // This requires knowing the actual Underground DLC feature types
+            // Examples might include: "Cave Entrance", "Mine Shaft", "Underground Access", etc.
+            // 
+            // Implementation would look like:
+            // foreach (Feature feature in from.properties.features)
+            // {
+            //     if (feature is UndergroundEntrance || feature is CaveEntrance)
+            //     {
+            //         return true;
+            //     }
+            // }
+            //
+            // OR using the extension method with proper implementation:
+            // foreach (Feature feature in from.properties.features)
+            // {
+            //     if (feature != null && feature.providesUndergroundAccess())
+            //     {
+            //         return true;
+            //     }
+            // }
 
-            return false;
+            Debug.LogWarning("IxthusFix: Layer transition access checking not fully implemented - cannot cross layers");
+            return false; // Placeholder - implement with actual game feature checks
         }
 
         /// <summary>
@@ -118,6 +131,8 @@ namespace IxthusFix
 
         /// <summary>
         /// FIX: Find a path that crosses between layers
+        /// TODO: This is a placeholder implementation
+        /// NOTE: Real pathfinding would require access to Underground DLC's transition point system
         /// </summary>
         protected virtual List<Location> findLayerTransitionPath(Location target)
         {
@@ -127,15 +142,29 @@ namespace IxthusFix
 
             List<Location> path = new List<Location>();
 
-            // Would need to:
+            // A complete implementation would need to:
             // 1. Find nearest underground entrance from current location
-            // 2. Path to entrance
-            // 3. Transition layer
-            // 4. Path from entrance to target on other layer
+            //    - Search nearby locations for features that provide underground access
+            //    - Use pathfinding to reach the entrance
+            // 2. Path to entrance on current layer
+            // 3. Transition through the entrance (layer change)
+            // 4. Path from entrance to target on the other layer
+            //    - May need to search for matching entrance on other side
+            //
+            // Example pseudocode:
+            // var entrance = findNearestLayerTransition(location);
+            // if (entrance != null)
+            // {
+            //     var pathToEntrance = base.getPathTo(entrance);
+            //     var pathFromEntrance = pathfindOnTargetLayer(entrance, target);
+            //     path.AddRange(pathToEntrance);
+            //     path.AddRange(pathFromEntrance);
+            // }
 
-            Debug.LogWarning("IxthusFix: Layer transition pathfinding not fully implemented");
+            Debug.LogWarning("IxthusFix: Layer transition pathfinding not fully implemented - agent cannot cross layers");
+            Debug.LogWarning($"IxthusFix: Would need to find path from {location?.getName() ?? "unknown"} to {target?.getName() ?? "unknown"} across layers");
             
-            return path;
+            return path; // Empty path - cannot cross layers with current implementation
         }
 
         /// <summary>
@@ -226,14 +255,34 @@ namespace IxthusFix
 
 /// <summary>
 /// Extension method to check if a feature provides underground access
-/// This would need to be implemented based on actual game features
+/// TODO: This needs to be implemented based on actual Underground DLC feature types
+/// CURRENT LIMITATION: Always returns false - agents cannot cross layers
+/// 
+/// To implement properly, you would need to:
+/// 1. Identify the actual Feature types in the game that provide underground access
+/// 2. Check if the feature is one of those types
+/// 
+/// Examples of features that might provide access:
+/// - Cave entrances
+/// - Mine shafts  
+/// - Dungeon entrances
+/// - Natural underground passages
+/// - Man-made underground structures
 /// </summary>
 public static class FeatureExtensions
 {
     public static bool providesUndergroundAccess(this Feature feature)
     {
-        // Placeholder - would need to check actual feature types
-        // Examples: Cave entrance, mine shaft, dungeon entrance, etc.
-        return false;
+        // TODO: Implement actual feature type checking
+        // Example implementation:
+        // if (feature == null) return false;
+        // 
+        // return feature.GetType().Name.Contains("Cave") ||
+        //        feature.GetType().Name.Contains("Mine") ||
+        //        feature.GetType().Name.Contains("Underground") ||
+        //        feature is SpecificUndergroundEntranceFeatureType;
+
+        Debug.LogWarning("IxthusFix: Feature.providesUndergroundAccess() not implemented - no layer transitions possible");
+        return false; // Placeholder - always denies underground access
     }
 }
