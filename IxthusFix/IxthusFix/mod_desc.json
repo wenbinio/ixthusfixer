@@ -1,0 +1,10 @@
+{
+  "name": "Ixthus Fix (Underground DLC Compatible)",
+  "author": "Community Fix",
+  "version": "2.0.0",
+  "description": "Fixed version of the Ixthus mod with Underground DLC compatibility. Play as the King of Cups with full support for the new underground layer system.",
+  "dll": "IxthusFix.dll",
+  "requires_underground_dlc": true,
+  "replaces": ["Ixthus"],
+  "tags": ["god", "fix", "underground", "compatibility"]
+}
