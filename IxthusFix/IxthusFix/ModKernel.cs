@@ -11,6 +11,8 @@ namespace IxthusFix
     /// </summary>
     public class ModKernel : ModKernelAbstract
     {
+        private static bool startupCompleted = false;
+
         public override string getModName()
         {
             return "Ixthus Fix (Underground DLC Compatible)";
@@ -37,6 +39,18 @@ namespace IxthusFix
         /// </summary>
         public override void onStartup(Map map)
         {
+            if (startupCompleted)
+            {
+                Console.WriteLine("IxthusFix: Startup already completed, skipping duplicate initialization call");
+                return;
+            }
+
+            if (map == null)
+            {
+                Console.WriteLine("IxthusFix: Startup failed - game passed a null map instance");
+                return;
+            }
+
             Console.WriteLine("IxthusFix: Initializing Ixthus with Underground DLC support...");
             
             try
@@ -55,6 +69,7 @@ namespace IxthusFix
                 Console.WriteLine("IxthusFix: Gawain agent registered with Underground DLC compatibility");
 
                 Console.WriteLine("IxthusFix: Initialization complete!");
+                startupCompleted = true;
             }
             catch (Exception ex)
             {

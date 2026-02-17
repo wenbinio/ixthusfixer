@@ -154,6 +154,27 @@ Use this as a reference for fixing your own mods. Key patterns:
 - [ ] Save/load works correctly
 - [ ] No null reference exceptions in logs
 
+## Game Startup Review (Failure/Malfunction Points)
+
+How the game typically calls this mod:
+1. The game reads `mod_desc.json`
+2. It loads `IxthusFix.dll`
+3. It instantiates `IxthusFix.ModKernel` (inherits `ModKernelAbstract`)
+4. It calls `onStartup(Map map)` to register content (for this mod: `map.addGod(new God_KingofCups())`)
+
+Startup risks reviewed in `ModKernel.onStartup`:
+- **Duplicate startup calls**: If startup is invoked more than once in a session, duplicate registration can occur. The kernel now guards against re-running initialization.
+- **Null map input**: If the game calls startup before map allocation is complete or after a failed load path, `map` can be null. The kernel now exits safely and logs a clear failure reason.
+- **Partial initialization**: If `map.addGod(...)` throws, startup remains incomplete and is not marked as successful.
+- **Error visibility**: Exceptions are logged with message and stack trace to aid diagnosis.
+
+Questions to raise during integration testing:
+1. Is `onStartup` guaranteed to be called exactly once per game process, or once per new game/load?
+2. Does the engine expect mods to register only on new-game creation, or also on loading save files?
+3. Should startup failures hard-fail mod loading, or is log-and-continue the expected contract?
+4. Are custom settlements/agents expected to be explicitly registered in startup, or discovered through other game systems?
+5. When an incompatible mod is present, does the engine enforce `getIncompatibilities()` at load time or only warn?
+
 ## Common Issues and Solutions
 
 ### Issue: "Null Reference Exception" on startup
