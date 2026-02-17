@@ -11,7 +11,8 @@ namespace IxthusFix
     /// </summary>
     public class ModKernel : ModKernelAbstract
     {
-        private static bool startupCompleted = false;
+        private bool startupCompleted = false;
+        private readonly object startupLock = new object();
 
         public override string getModName()
         {
@@ -39,42 +40,45 @@ namespace IxthusFix
         /// </summary>
         public override void onStartup(Map map)
         {
-            if (startupCompleted)
+            lock (startupLock)
             {
-                Console.WriteLine("IxthusFix: Startup already completed, skipping duplicate initialization call");
-                return;
-            }
+                if (startupCompleted)
+                {
+                    Console.WriteLine("IxthusFix: Startup already completed, skipping duplicate initialization call");
+                    return;
+                }
 
-            if (map == null)
-            {
-                Console.WriteLine("IxthusFix: Startup failed - game passed a null map instance");
-                return;
-            }
+                if (map == null)
+                {
+                    Console.WriteLine("IxthusFix: Startup failed - game passed a null map instance");
+                    return;
+                }
 
-            Console.WriteLine("IxthusFix: Initializing Ixthus with Underground DLC support...");
-            
-            try
-            {
-                // Register the God
-                God_KingofCups god = new God_KingofCups();
-                map.addGod(god);
-                Console.WriteLine("IxthusFix: Successfully registered King of Cups god");
+                Console.WriteLine("IxthusFix: Initializing Ixthus with Underground DLC support...");
+                
+                try
+                {
+                    // Register the God
+                    God_KingofCups god = new God_KingofCups();
+                    map.addGod(god);
+                    Console.WriteLine("IxthusFix: Successfully registered King of Cups god");
 
-                // Register custom settlement type
-                // The Crypt settlement is now properly configured for layer support
-                Console.WriteLine("IxthusFix: Crypt settlement registered with layer support");
+                    // Register custom settlement type
+                    // The Crypt settlement is now properly configured for layer support
+                    Console.WriteLine("IxthusFix: Crypt settlement registered with layer support");
 
-                // Register custom agent
-                // Gawain agent is now layer-aware
-                Console.WriteLine("IxthusFix: Gawain agent registered with Underground DLC compatibility");
+                    // Register custom agent
+                    // Gawain agent is now layer-aware
+                    Console.WriteLine("IxthusFix: Gawain agent registered with Underground DLC compatibility");
 
-                Console.WriteLine("IxthusFix: Initialization complete!");
-                startupCompleted = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"IxthusFix: Error during initialization - {ex.Message}");
-                Console.WriteLine($"IxthusFix: Stack trace - {ex.StackTrace}");
+                    Console.WriteLine("IxthusFix: Initialization complete!");
+                    startupCompleted = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"IxthusFix: Error during initialization - {ex.Message}");
+                    Console.WriteLine($"IxthusFix: Stack trace - {ex.StackTrace}");
+                }
             }
         }
 
